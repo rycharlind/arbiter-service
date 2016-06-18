@@ -1,0 +1,31 @@
+
+/*
+ * GET home page.
+ */
+
+var mongo = require('mongodb').MongoClient;
+
+
+exports.index = function(req, res){
+  res.render('index', { title: 'Express' })
+};
+
+exports.register = function(req, res){
+	console.dir(req.body);
+	mongo.connect("mongodb://localhost:27017/arbiter", function(err, db) {
+		if(!err) {
+			db.collection('accounts').insertOne(req.body);
+		}
+	});
+	res.send(req.body);
+}
+
+exports.signin = function(req, res){
+	mongo.connect("mongodb://localhost:27017/arbiter", function(err, db) {
+		if(!err) {
+			db.collection('accounts').findOne({username: req.query.username, password: req.query.password}, function(err, doc) {
+					res.send(doc);
+			  });
+		}
+	});
+}
